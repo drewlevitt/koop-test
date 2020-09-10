@@ -55,45 +55,17 @@ Another very helpful tutorial, [here](https://koopjs.github.io/docs/deployment/h
     1. I found, when trying to run step 3 below, that the code provided by the Koop tutorial needed a slight change: `process.NODE_ENV.$PORT` needed to be replaced by `process.env.PORT`. This [Heroku help page](https://help.heroku.com/P1AVPANS/why-is-my-node-js-app-crashing-with-an-r10-error) helped me identify the correct syntax.
     2. In case you're wondering, like I was, where the `process` object referenced in the new code comes from, it is a [global variable](https://www.twilio.com/blog/working-with-environment-variables-in-node-js-html) created when a Node.js process starts up.
 3. From the `koop-test` directory, run `heroku local web` to test whether the app will run correctly. This will make the app available at http://localhost:5000/ (note: different port number than before).
+4. Now that the Koop app is properly configured, let's commit and push all changes to Git/GitHub. I usually use the Git interface within VS Code or GitHub Desktop to do so, but you geniuses who actually understand Git can use whatever terminal commands you like. :)
 
 ### Deploy the Koop app to Heroku
 Still working from this [tutorial](https://koopjs.github.io/docs/deployment/heroku).
 
 1. From the `koop-test` directory, run `heroku create` to create a new app on Heroku. This will give the app a random name, but we can [change the name](https://devcenter.heroku.com/articles/creating-apps#creating-an-app-without-a-name) later.
-2. 
+2. In Git Bash (or maybe also in any other terminal), from the `koop-test` directory, run `git push heroku master`. This will push the `master` branch from GitHub to a remote on Heroku, which will receive the code and then build/deploy the app accordingly. This worked for me first try and I was blown away... for a little while, anyway.
+3. Near the bottom of the output from that terminal command, you will see a URL to the deployed app (in my case, https://glacial-dawn-93110.herokuapp.com/). Open this up, append the route we identified earlier, and we're in business: https://glacial-dawn-93110.herokuapp.com/koop-provider-csv/food-data/FeatureServer/0/query?resultRecordCount=-1
 
+### Get stymied by a mysterious app crash
 
-Below, for the record, is the boilerplate README.md created by `koop new app`.
-
-# koop-cli-new-project
-
-A minimal Koop project template from [Koop CLI](https://github.com/koopjs/koop-cli).
-
-See the [specification](https://koopjs.github.io/docs/usage/koop-core) for more details.
-
-## Configuration
-
-This project is configured with [config](https://www.npmjs.com/package/config). As a community practice, it is recommended to namespace the configuration for plugins in order to avoid any potential key conflict.
-
-## Development
-
-### Testing
-
-This project uses [mocha](https://www.npmjs.com/package/mocha) as the testing framework and [chaijs](https://www.chaijs.com/) as the assertion library. All test files in the `test` directory should have the special extension `.test.js`, which will be executed by the command:
-
-```
-$ npm test
-```
-
-### Dev Server
-
-This project by default uses the [Koop CLI](https://github.com/koopjs/koop-cli) to set up the dev server. It can be invoked via
-
-```
-$ npm start
-```
-
-The server will be running at `http://localhost:8080` or at the port specified at the configuration.
-
-For more details, check the [Koop CLI documentation](https://github.com/koopjs/koop-cli/blob/master/README.md).
-
+1. Actually, no, we're not in business. That route (and other `query` routes) doesn't work. The app crashes and we may even need to run `heroku restart` to [get it running again](https://devcenter.heroku.com/articles/application-offline#restart-your-application). But other routes do work! Just not the `query` route; you know, the one we actually need.
+2. Try hard to diagnose the problem, but fail. Post a [question](https://stackoverflow.com/questions/63835106/how-can-i-access-log-files-written-to-the-local-filesystem-of-a-heroku-dyno) or two to StackOverflow. 
+3. Document what you've done and push to GitHub. Share with your teammates; maybe they can figure out what is going wrong.
