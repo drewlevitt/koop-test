@@ -8,6 +8,13 @@
           "longitude": "longitude",
           "latitude": "latitude"
         }
+      },
+      "sales": {
+        "url": "http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv",
+        "geometryColumns": {
+          "longitude": "Longitude",
+          "latitude": "Latitude"
+        }
       }
     }
   }
