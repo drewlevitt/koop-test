@@ -67,5 +67,26 @@ Still working from this [tutorial](https://koopjs.github.io/docs/deployment/hero
 ### Get stymied by a mysterious app crash
 
 1. Actually, no, we're not in business. That route (and other `query` routes) doesn't work. The app crashes and we may even need to run `heroku restart` to [get it running again](https://devcenter.heroku.com/articles/application-offline#restart-your-application). But other routes do work! Just not the `query` route; you know, the one we actually need.
-2. Try hard to diagnose the problem, but fail. Post a [question](https://stackoverflow.com/questions/63835106/how-can-i-access-log-files-written-to-the-local-filesystem-of-a-heroku-dyno) or two to StackOverflow. 
+2. Try hard to diagnose the problem, but fail. Post a [question](https://stackoverflow.com/questions/63835106/how-can-i-access-log-files-written-to-the-local-filesystem-of-a-heroku-dyno) or [two](https://stackoverflow.com/questions/63836606/why-is-my-koop-js-query-route-crashing-on-heroku) to StackOverflow. 
 3. Document what you've done and push to GitHub. Share with your teammates; maybe they can figure out what is going wrong.
+4. Email the main developer. His name is Rich Gwozdz (!) and he works at Esri. He isn't sure what's going on either, but he suggests enabling debugging the Heroku deployment and points you toward a very helpful [Stack Overflow thread](https://stackoverflow.com/questions/38568917/how-could-i-debug-a-node-js-app-deploy-on-heroku).
+
+### Enable debugging on Heroku
+Working from the top answer on the [Stack Overflow thread](https://stackoverflow.com/questions/38568917/how-could-i-debug-a-node-js-app-deploy-on-heroku), with help from Heroku's documentation on [Heroku Exec and remote debugging](https://devcenter.heroku.com/articles/exec#remote-debugging).
+
+1. In the `koop-test` directory, create a new file named `Procfile`. Arguably we should have had one of these all along, because Heroku uses this file to determine how to deploy the app, but Heroku's defaults work fine so we didn't need to create one until now.
+2. Edit `procfile` to tell Heroku to start Node.js with debugging enabled: `web: node --inspect=9090 src/index.js`. The `9090` tells Heroku which port to use for debugging; we could have used almost any other port (except low-numbered ports like 80 which are already used for other purposes such as general web traffic).
+3. From the `koop-test` directory, run `heroku ps:exec` to enable the debugging connection. When you get to a `$` prompt, type `exit` to exit that prompt.
+4. Redeploy the Heroku app: commit changes to GitHub, then `git push heroku master`.
+5. Run `heroku ps:forward 9090` to start port forwarding (whatever that means).
+6. Depending on which IDE you're using (I use VS Code), create or edit launch.json and add the following configuration:
+```
+{
+    "type": "node",
+    "request": "attach",
+    "name": "Heroku",
+    "port": 9090
+}
+```
+7. Launch the "Heroku" debugger in your IDE.
+
