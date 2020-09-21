@@ -69,7 +69,7 @@ Still working from this [tutorial](https://koopjs.github.io/docs/deployment/hero
 1. Actually, no, we're not in business. That route (and other `query` routes) doesn't work. The app crashes and we may even need to run `heroku restart` to [get it running again](https://devcenter.heroku.com/articles/application-offline#restart-your-application). But other routes do work! Just not the `query` route; you know, the one we actually need.
 2. Try hard to diagnose the problem, but fail. Post a [question](https://stackoverflow.com/questions/63835106/how-can-i-access-log-files-written-to-the-local-filesystem-of-a-heroku-dyno) or [two](https://stackoverflow.com/questions/63836606/why-is-my-koop-js-query-route-crashing-on-heroku) to StackOverflow. 
 3. Document what you've done and push to GitHub. Share with your teammates; maybe they can figure out what is going wrong.
-4. Email the main developer. His name is Rich Gwozdz (!) and he works at Esri. He isn't sure what's going on either, but he suggests enabling debugging the Heroku deployment and points you toward a very helpful [Stack Overflow thread](https://stackoverflow.com/questions/38568917/how-could-i-debug-a-node-js-app-deploy-on-heroku).
+4. Email the main developer. His name is Rich Gwozdz and he works at Esri. He isn't sure what's going on either, but he suggests enabling debugging the Heroku deployment and points you toward a very helpful [Stack Overflow thread](https://stackoverflow.com/questions/38568917/how-could-i-debug-a-node-js-app-deploy-on-heroku).
 
 ### Enable debugging on Heroku
 Working from the top answer on the [Stack Overflow thread](https://stackoverflow.com/questions/38568917/how-could-i-debug-a-node-js-app-deploy-on-heroku), with help from Heroku's documentation on [Heroku Exec and remote debugging](https://devcenter.heroku.com/articles/exec#remote-debugging).
@@ -90,3 +90,17 @@ Working from the top answer on the [Stack Overflow thread](https://stackoverflow
 ```
 7. Launch the "Heroku" debugger in your IDE.
 
+### Try other things
+
+1. The debugger notes a caught exception having to do with identifying the text encoding of the input CSV. Because this exception is caught, I really don't think this is the problem, but let's try to [force UTF-8 encoding](https://stackoverflow.com/questions/7612912/set-utf-8-as-default-string-encoding-in-heroku) (rather than ASCII) and see if that helps. ... It does not. Same problem as before, and the caught exception is still present. Now the default encoding is UTF-8, but the crash still happens at the `query` route.
+2. Try a different implementation of `koop-provider-csv` that does not use the the `autodetect-decoder-stream` package. First we need to remove the original `koop-provider-csv`:
+    1. Remove the `koop-provider-csv` reference in `src/plugins.js`.
+    2. Edit `config/default.json` to either remove or repurpose the `koop-provider-csv` configuration (by changing `koop-provider-csv` to `@ntkog/koop-provider-csv`). *Edit: I later found that `koop-provider-csv-ntkog` expects the `config` entry to be under `koop-provider-csv` so no change to `config/default.json` was needed after all.*
+    3. Run `npm uninstall koop-provider-csv` to remove the package.
+    4. Delete the directory `src/koop-provider-csv`.
+3. Now we need to install the new `koop-provider-csv`: `npm install ntkog/koop-provider-csv`, then `koop add provider koop-provider-csv-ntkog`.
+4. That one crashes for different reasons, plus Haoliang has recently published an update (version 3.1.0) to the original `koop-provider-csv` that avoids the text encoding exception. So let's go back to that plugin:
+    1. Remove the `koop-provider-csv-ntkog` reference in `src/plugins.js`.
+    2. Run `npm uninstall koop-provider-csv-ntkog`.
+    3. Delete the directory `src/koop-provider-csv-ntkog`.
+5. Now when we run `heroku local web`, the route http://localhost:5000/koop-provider-csv/food-data/FeatureServer/0/query works great. 

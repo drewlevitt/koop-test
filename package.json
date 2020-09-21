@@ -8,9 +8,10 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@ntkog/koop-provider-csv": "^1.0.0",
     "config": "^3.3.1",
     "koop": "^4.0.1",
-    "koop-provider-csv": "^3.0.1"
+    "koop-provider-csv": "^3.1.0"
   },
   "devDependencies": {
     "@koopjs/cli": "^0.6.3",

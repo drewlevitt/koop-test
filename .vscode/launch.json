@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to Heroku local",
+            "port": 9090,
+            "request": "attach",
+            "type": "node"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
