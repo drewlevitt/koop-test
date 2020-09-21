@@ -103,4 +103,8 @@ Working from the top answer on the [Stack Overflow thread](https://stackoverflow
     1. Remove the `koop-provider-csv-ntkog` reference in `src/plugins.js`.
     2. Run `npm uninstall koop-provider-csv-ntkog`.
     3. Delete the directory `src/koop-provider-csv-ntkog`.
-5. Now when we run `heroku local web`, the route http://localhost:5000/koop-provider-csv/food-data/FeatureServer/0/query works great. 
+
+### Give up and try a different platform
+1. Now when we run `heroku local web`, the route http://localhost:5000/koop-provider-csv/food-data/FeatureServer/0/query works great. 
+2. But when we redeploy our app via `git push heroku master`, the route https://glacial-dawn-93110.herokuapp.com/koop-provider-csv/food-data/FeatureServer/0/query still crashes the app. This is a total bummer. Haoliang is looking into why this might be the case, but for now we will need to try a different platform. 
+3. I'm going to try Google App Engine, part of the Google Cloud ecosystem. But I'll do that in a different repository than this one. 
